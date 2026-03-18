@@ -13,7 +13,7 @@ export function LandingFooter() {
             <Link className="underline" href="/start">
               Criar conta
             </Link>
-            <Link className="underline" href="/t/demo">
+            <Link className="underline" href="/#demo">
               Demo
             </Link>
           </div>

@@ -5,22 +5,19 @@ import { GlowCard } from "./GlowCard";
 
 const testimonials = [
   {
-    quote:
-      "A troca por equivalentes resolveu 80% das ligações. A cozinha ficou mais rápida e o cliente entende melhor.",
-    who: "Lanchonete (beta)",
-    role: "Dono",
+    quote: "Menos ajustes e mais pedidos fechados sem retrabalho.",
+    who: "Comerciante iUai",
+    role: "Operação",
   },
   {
-    quote:
-      "O cliente monta do jeito dele sem pedir coisa impossível. Menos discussão, mais pedido fechado.",
-    who: "Hamburgueria (beta)",
-    role: "Gerente",
+    quote: "Trocas dentro das regras evitam prejuízo e conversa longa.",
+    who: "Gerência iUai",
+    role: "Gestão",
   },
   {
-    quote:
-      "O painel em tempo real dá tranquilidade. E o código do pedido no estilo iFood ajuda demais no balcão.",
-    who: "Hot-dog (beta)",
-    role: "Atendente",
+    quote: "O pedido chega mais claro e a cozinha roda em ritmo melhor.",
+    who: "Cozinha iUai",
+    role: "Atendimento",
   },
 ];
 

@@ -29,7 +29,7 @@ export function LandingCTA() {
                   <Link className="btn btn-primary" href="/start">
                     Criar conta agora
                   </Link>
-                  <Link className="btn" href="/t/demo">
+                  <Link className="btn" href="/#demo">
                     Ver demo
                   </Link>
                 </div>

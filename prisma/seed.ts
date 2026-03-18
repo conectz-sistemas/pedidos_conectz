@@ -8,6 +8,14 @@ function cents(v: number) {
 }
 
 async function main() {
+  // Em produção, evite carregar dados demo automaticamente.
+  // Para rodar seed propositalmente em qualquer ambiente:
+  //   SEED_DEMO=1 npx prisma db seed
+  if (process.env.NODE_ENV === "production" && process.env.SEED_DEMO !== "1") {
+    console.log("Seed ignorado em produção (defina SEED_DEMO=1 para permitir).");
+    return;
+  }
+
   const passwordHash = await bcrypt.hash("admin123", 10);
 
   const merchant = await prisma.merchant.upsert({

@@ -15,7 +15,7 @@ export function BillingButton({ merchantSlug }: { merchantSlug: string }) {
   return (
     <button
       type="button"
-      className="rounded-xl bg-white text-black px-4 py-2 text-sm font-medium"
+      className="btn btn-primary btn-glow w-full md:w-auto"
       onClick={go}
     >
       Assinar iUai — R$ 49,90/mês
