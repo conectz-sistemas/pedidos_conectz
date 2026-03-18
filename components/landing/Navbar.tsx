@@ -16,7 +16,7 @@ export function LandingNavbar() {
           </span>
         </Link>
         <div className="flex items-center gap-2">
-          <Link className="btn" href="/t/demo">
+          <Link className="btn" href="/#demo">
             Ver demo
           </Link>
           <Link className="btn" href="/admin">

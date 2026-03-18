@@ -13,7 +13,7 @@ body {
   margin: 0;
   font-family: var(--font-inter), ui-sans-serif, system-ui, -apple-system, Segoe UI,
     Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
-  background: #0b0f17;
+  background: #0B0F1A;
   color: #e8eefc;
 }
 
@@ -137,8 +137,8 @@ a {
 }
 
 .btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.35);
+  transform: scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
 }
 
 .btn-primary:hover {
