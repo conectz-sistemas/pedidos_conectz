@@ -1,0 +1,26 @@
+import "./globals.css";
+import { Inter } from "next/font/google";
+
+export const metadata = {
+  title: "iUai",
+  description: "Pedidos digitais simples para lanchonetes",
+};
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="pt-BR">
+      <body className={inter.variable}>{children}</body>
+    </html>
+  );
+}
+

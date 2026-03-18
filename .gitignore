@@ -1,0 +1,46 @@
+# Dependencies
+/node_modules/
+
+# Next.js build output
+/.next/
+/out/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Local env files (DO NOT COMMIT)
+.env
+.env.*
+!.env.example
+
+# Prisma
+/prisma/*.db
+/prisma/migrations/**/migration_lock.toml
+/prisma/migrations/**/migration.sql
+
+# Cache
+.turbo/
+.cache/
+.eslintcache/
+.stylelintcache/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Cursor (optional)
+.cursor/
+
+# Coverage / Test
+coverage/
+*.lcov
+
+# Misc
+*.tsbuildinfo
