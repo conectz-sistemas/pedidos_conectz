@@ -22,7 +22,7 @@ export type CartItem = {
 export type Cart = { items: CartItem[] };
 
 export function cartStorageKey(merchantSlug: string) {
-  return `iuai_cart_${merchantSlug}`;
+  return `pedidos_conectz_cart_${merchantSlug}`;
 }
 
 export function readCart(merchantSlug: string): Cart {

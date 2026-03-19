@@ -48,7 +48,7 @@ export default async function TenantHome({
               <span className="text-white">{merchant.isOpen ? "Aberto" : "Fechado"}</span>
             </div>
           </div>
-          <div className="text-sm text-white/70">Pedidos pelo iUai</div>
+          <div className="text-sm text-white/70">Pedidos pelo Pedidos ConectZ</div>
         </div>
 
         {!merchant.isOpen ? (

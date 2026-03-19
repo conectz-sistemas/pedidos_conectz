@@ -23,7 +23,7 @@ async function main() {
     update: {},
     create: {
       slug: "demo",
-      name: "Lanchonete Demo iUai",
+      name: "Lanchonete Demo Pedidos ConectZ",
       isOpen: true,
       phone: "55 00 00000-0000",
       cancellationFeeCents: cents(2.5), // exemplo: taxa de cancelamento após confirmado
@@ -42,10 +42,10 @@ async function main() {
   });
 
   await prisma.user.upsert({
-    where: { email: "dono@iuai.com" },
+    where: { email: "dono@pedidosconectz.com" },
     update: { role: "SUPERADMIN", merchantId: null },
     create: {
-      email: "dono@iuai.com",
+      email: "dono@pedidosconectz.com",
       passwordHash,
       role: "SUPERADMIN",
       merchantId: null,

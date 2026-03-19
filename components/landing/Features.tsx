@@ -30,8 +30,8 @@ const features = [
     icon: "▣",
   },
   {
-    title: "Pronto para assinatura",
-    desc: "Estrutura de cobrança recorrente via Stripe e webhooks.",
+    title: "Pronto para produção",
+    desc: "Estrutura pronta para operar. Cobrança recorrente fica para a próxima fase.",
     icon: "⎈",
   },
 ];
@@ -43,7 +43,7 @@ export function LandingFeatures() {
         <Reveal>
           <div className="flex items-end justify-between gap-3">
             <div>
-              <div className="text-sm text-white/60">Por que iUai</div>
+              <div className="text-sm text-white/60">Por que Pedidos ConectZ</div>
               <h2 className="mt-2 text-2xl font-semibold tracking-tight md:text-3xl">
                 Feito para reduzir ligações — e aumentar pedido.
               </h2>

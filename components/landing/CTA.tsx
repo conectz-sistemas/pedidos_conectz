@@ -29,9 +29,6 @@ export function LandingCTA() {
                   <Link className="btn btn-primary" href="/start">
                     Criar conta agora
                   </Link>
-                  <Link className="btn" href="/#demo">
-                    Ver demo
-                  </Link>
                 </div>
                 <div className="text-xs text-white/60">
                   Um domínio só basta. Você pode usar `www` + `app` ou tudo no mesmo.

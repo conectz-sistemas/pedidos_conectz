@@ -13,7 +13,7 @@ export function LandingProblem() {
               Erros em pedidos viram retrabalho e ligação no balcão.
             </h2>
             <p className="mt-3 text-sm text-white/70 md:text-base">
-              O iUai transforma personalização em regra: claro para o cliente, controlado para o comerciante.
+              O Pedidos ConectZ transforma personalização em regra: claro para o cliente, controlado para o comerciante.
             </p>
           </div>
         </Reveal>

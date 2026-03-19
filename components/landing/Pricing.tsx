@@ -49,7 +49,7 @@ export function LandingPricing() {
                       </Link>
                     </div>
                     <div className="mt-2 text-xs text-white/60">
-                      Checkout via Stripe (assinatura).
+                      Sem cobrança agora (fase de validação).
                     </div>
                   </div>
                 </div>
@@ -65,9 +65,6 @@ export function LandingPricing() {
                 Ideal para quem recebe pedidos pelo WhatsApp e quer organizar a cozinha e reduzir ligações.
               </p>
               <div className="mt-5 flex flex-col gap-2">
-                <Link className="btn" href="/#demo">
-                  Ver demo
-                </Link>
                 <Link className="btn" href="/admin">
                   Já tenho conta
                 </Link>

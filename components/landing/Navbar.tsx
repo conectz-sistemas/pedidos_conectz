@@ -9,16 +9,13 @@ export function LandingNavbar() {
         <Link href="/" className="flex items-center gap-2">
           <LogoMark />
           <span className="font-semibold tracking-wide">
-            iUai{" "}
+            Pedidos ConectZ{" "}
             <span className="hidden md:inline text-white/55 font-medium">
               — pedidos com trocas justas
             </span>
           </span>
         </Link>
         <div className="flex items-center gap-2">
-          <Link className="btn" href="/#demo">
-            Ver demo
-          </Link>
           <Link className="btn" href="/admin">
             Entrar
           </Link>

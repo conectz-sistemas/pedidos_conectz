@@ -6,17 +6,17 @@ import { GlowCard } from "./GlowCard";
 const testimonials = [
   {
     quote: "Menos ajustes e mais pedidos fechados sem retrabalho.",
-    who: "Comerciante iUai",
+    who: "Comerciante Pedidos ConectZ",
     role: "Operação",
   },
   {
     quote: "Trocas dentro das regras evitam prejuízo e conversa longa.",
-    who: "Gerência iUai",
+    who: "Gerência Pedidos ConectZ",
     role: "Gestão",
   },
   {
     quote: "O pedido chega mais claro e a cozinha roda em ritmo melhor.",
-    who: "Cozinha iUai",
+    who: "Cozinha Pedidos ConectZ",
     role: "Atendimento",
   },
 ];
@@ -33,7 +33,7 @@ export function LandingSocialProof() {
                 Clareza no pedido. Fluidez na cozinha.
               </h2>
               <p className="mt-3 max-w-2xl text-sm text-white/70 md:text-base">
-                O diferencial do iUai é transformar personalização em regra — sem perder conversão.
+                O diferencial do Pedidos ConectZ é transformar personalização em regra — sem perder conversão.
               </p>
             </div>
             <div className="glass glow-ring rounded-2xl px-4 py-3 text-xs text-white/70">

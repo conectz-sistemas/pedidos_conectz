@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import Link from "next/link";
+import { MerchantOpenCloseToggle } from "@/components/MerchantOpenCloseToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -37,14 +38,23 @@ export default async function AdminHomePage() {
               </p>
             </div>
 
-            {role === "SUPERADMIN" ? (
-              <Link
-                className="rounded-xl border border-white/25 bg-white/10 px-3 py-1.5 text-xs text-white"
-                href="/saas"
-              >
-                Dono do SaaS
-              </Link>
-            ) : null}
+            <div className="flex items-center gap-3">
+              {role === "SUPERADMIN" ? (
+                <Link
+                  className="rounded-xl border border-white/25 bg-white/10 px-3 py-1.5 text-xs text-white"
+                  href="/saas"
+                >
+                  Dono do SaaS
+                </Link>
+              ) : null}
+
+              {merchant && role !== "SUPERADMIN" ? (
+                <MerchantOpenCloseToggle
+                  merchantSlug={merchant.slug}
+                  initialIsOpen={merchant.isOpen}
+                />
+              ) : null}
+            </div>
           </div>
 
           <div className="mt-6 grid gap-3 text-sm text-white/80">
