@@ -13,7 +13,7 @@ export default async function TenantLayout({
       <header className="sticky top-0 z-10 border-b border-white/10 bg-black/40 backdrop-blur">
         <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
           <Link className="font-semibold" href={`/t/${slug}`}>
-            iUai
+            Pedidos ConectZ
           </Link>
           <div className="flex items-center gap-2">
             <Link

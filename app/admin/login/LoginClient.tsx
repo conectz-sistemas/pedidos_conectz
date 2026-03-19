@@ -31,7 +31,7 @@ export default function LoginClient() {
 
   return (
     <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-6">
-      <h1 className="text-xl font-semibold">Entrar no iUai</h1>
+      <h1 className="text-xl font-semibold">Entrar no Pedidos ConectZ</h1>
       <p className="mt-1 text-sm text-white/70">Login do painel da lanchonete (admin).</p>
 
       <form className="mt-6 grid gap-3" onSubmit={onSubmit}>

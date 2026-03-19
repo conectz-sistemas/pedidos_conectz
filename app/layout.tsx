@@ -2,7 +2,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 
 export const metadata = {
-  title: "iUai",
+  title: "Pedidos ConectZ",
   description: "Pedidos digitais simples para lanchonetes",
 };
 

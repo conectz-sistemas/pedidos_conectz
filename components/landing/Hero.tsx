@@ -21,7 +21,7 @@ export function LandingHero() {
               className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/70"
             >
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/80" />
-              Stripe-style checkout + cozinha em tempo real
+              Onboarding simples + cozinha em tempo real
             </motion.div>
 
             <motion.h1
@@ -51,9 +51,6 @@ export function LandingHero() {
               <Link className="btn btn-primary btn-glow" href="/start">
                 Começar agora
               </Link>
-              <Link className="btn" href="/#demo">
-                Ver demonstração
-              </Link>
             </motion.div>
           </div>
 
@@ -67,7 +64,7 @@ export function LandingHero() {
               transition: "transform 250ms ease",
             }}
           >
-            <div id="demo" className="glass rounded-2xl border border-white/10 p-5">
+            <div className="glass rounded-2xl border border-white/10 p-5">
               <div className="flex items-center justify-between text-xs text-white/70">
                 <div className="font-medium text-white/85">Mockup do painel</div>
                 <div className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5">

@@ -1,6 +1,6 @@
-# iUai (MVP) — SaaS de pedidos digitais
+# Pedidos ConectZ (MVP) — SaaS de pedidos digitais
 
-MVP funcional do **iUai** (multi-tenant por `slug`) para lanchonetes venderem via web, com:
+MVP funcional do **Pedidos ConectZ** (multi-tenant por `slug`) para lanchonetes venderem via web, com:
 
 - Tela do cliente: catálogo, personalização (remover / **trocar por equivalente sem custo** / extras pagos), carrinho e checkout.
 - Painel da lanchonete (admin): pedidos com atualização automática + alerta sonoro, abre/fecha manual, cadastro de cardápio (ingredientes, grupos, produtos, ingredientes padrão, equivalentes e extras).
@@ -56,7 +56,7 @@ O seed cria a lanchonete **demo** e exemplos para a lógica de equivalentes:
 Também cria usuários:
 
 - **Admin da lanchonete**: `admin@demo.com` / senha `admin123`
-- **Dono do SaaS**: `dono@iuai.com` / senha `admin123`
+- **Dono do SaaS**: `dono@pedidosconectz.com` / senha `admin123`
 
 ### 4) Subir o projeto
 

@@ -78,16 +78,9 @@ function makeBeep() {
 export function AdminOrdersBoard({ merchantSlug }: { merchantSlug: string }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [isOpen, setIsOpen] = useState<boolean | null>(null);
   const seen = useRef<Set<string>>(new Set());
 
   async function refresh() {
-    if (isOpen === null) {
-      const mres = await fetch(`/api/admin/${merchantSlug}/merchant`, { cache: "no-store" });
-      const mjson = await mres.json().catch(() => null);
-      if (mres.ok) setIsOpen(!!mjson.merchant?.isOpen);
-    }
-
     const res = await fetch(`/api/admin/${merchantSlug}/orders`, { cache: "no-store" });
     const json = await res.json().catch(() => null);
     if (!res.ok) {
@@ -126,16 +119,6 @@ export function AdminOrdersBoard({ merchantSlug }: { merchantSlug: string }) {
     refresh();
   }
 
-  async function toggleOpen() {
-    if (isOpen === null) return;
-    const res = await fetch(`/api/admin/${merchantSlug}/merchant`, {
-      method: "PATCH",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ isOpen: !isOpen }),
-    });
-    if (res.ok) setIsOpen(!isOpen);
-  }
-
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
       <div className="flex items-start justify-between gap-3">
@@ -145,19 +128,7 @@ export function AdminOrdersBoard({ merchantSlug }: { merchantSlug: string }) {
             Atualiza automaticamente. Quando chegar pedido novo, toca um alerta simples.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            className={`rounded-xl px-3 py-1.5 text-sm border ${
-              isOpen
-                ? "bg-emerald-500/15 text-emerald-100 border-emerald-500/30"
-                : "bg-red-500/15 text-red-100 border-red-500/30"
-            }`}
-            onClick={toggleOpen}
-            type="button"
-          >
-            {isOpen === null ? "Carregando..." : isOpen ? "Aberto (clique para fechar)" : "Fechado (clique para abrir)"}
-          </button>
-        </div>
+        <div />
       </div>
 
       {error ? (

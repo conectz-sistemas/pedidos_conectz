@@ -22,7 +22,7 @@ export function LandingPlan() {
         <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-6 md:p-8">
           <div className="grid gap-6 md:grid-cols-2 md:items-start">
             <div>
-              <div className="text-sm text-white/60">iUai SaaS</div>
+              <div className="text-sm text-white/60">Pedidos ConectZ SaaS</div>
               <div className="mt-2 text-4xl font-semibold tracking-tight">
                 R$49,90<span className="text-base font-medium text-white/60">/mês</span>
               </div>
@@ -37,9 +37,7 @@ export function LandingPlan() {
               <Link href="/start" className="btn btn-primary btn-glow w-full text-center">
                 Começar agora
               </Link>
-              <div className="text-xs text-white/60">
-                Checkout via Stripe (assinatura).
-              </div>
+              <div className="text-xs text-white/60">Sem cobrança agora (fase de validação).</div>
               <div className="divider-fade" />
               <div className="text-sm text-white/70">
                 Você configura em poucos passos e já publica seu catálogo.

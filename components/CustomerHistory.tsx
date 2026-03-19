@@ -11,7 +11,7 @@ type HistoryEntry = {
 };
 
 function storageKey(merchantSlug: string) {
-  return `iuai_history_${merchantSlug}`;
+  return `pedidos_conectz_history_${merchantSlug}`;
 }
 
 export function addToHistory(merchantSlug: string, entry: HistoryEntry) {

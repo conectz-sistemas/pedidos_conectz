@@ -20,8 +20,6 @@ export default async function SaasPage() {
       slug: true,
       isOpen: true,
       subscriptionStatus: true,
-      stripeCustomerId: true,
-      stripeSubId: true,
       createdAt: true,
     },
   });
@@ -32,7 +30,7 @@ export default async function SaasPage() {
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <h1 className="text-xl font-semibold">iUai — Dono do SaaS</h1>
+              <h1 className="text-xl font-semibold">Pedidos ConectZ — Dono do SaaS</h1>
               <p className="mt-1 text-sm text-white/70">
                 Visão rápida dos clientes (lanchonetes) cadastrados.
               </p>
@@ -53,7 +51,6 @@ export default async function SaasPage() {
                   <th className="p-3 text-left font-medium">Slug</th>
                   <th className="p-3 text-left font-medium">Aberto</th>
                   <th className="p-3 text-left font-medium">Assinatura</th>
-                  <th className="p-3 text-left font-medium">Stripe</th>
                 </tr>
               </thead>
               <tbody>
@@ -65,15 +62,11 @@ export default async function SaasPage() {
                     <td className="p-3 text-white/80">
                       {m.subscriptionStatus ?? "—"}
                     </td>
-                    <td className="p-3 text-white/60">
-                      {m.stripeCustomerId ? "customer OK" : "—"}{" "}
-                      {m.stripeSubId ? " / sub OK" : ""}
-                    </td>
                   </tr>
                 ))}
                 {merchants.length === 0 ? (
                   <tr>
-                    <td className="p-3 text-white/70" colSpan={5}>
+                    <td className="p-3 text-white/70" colSpan={4}>
                       Nenhuma lanchonete cadastrada ainda.
                     </td>
                   </tr>
