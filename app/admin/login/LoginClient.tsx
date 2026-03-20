@@ -1,6 +1,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
@@ -72,6 +73,12 @@ export default function LoginClient() {
         >
           {loading ? "Entrando..." : "Entrar"}
         </button>
+
+        <p className="mt-4 text-center text-xs text-white/60">
+          <Link href="/start-dono" className="underline hover:text-white/80">
+            Criar primeiro acesso (dono do SaaS)
+          </Link>
+        </p>
       </form>
     </div>
   );

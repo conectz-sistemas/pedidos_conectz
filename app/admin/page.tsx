@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import Link from "next/link";
+import { LogoutButton } from "@/components/LogoutButton";
 import { MerchantOpenCloseToggle } from "@/components/MerchantOpenCloseToggle";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +23,7 @@ export default async function AdminHomePage() {
   const merchant = merchantId
     ? await prisma.merchant.findUnique({
         where: { id: merchantId },
-        select: { id: true, name: true, slug: true, isOpen: true, subscriptionStatus: true },
+        select: { id: true, name: true, slug: true, isOpen: true, subscriptionStatus: true, isActive: true, isBlocked: true },
       })
     : null;
 
@@ -48,6 +49,8 @@ export default async function AdminHomePage() {
                 </Link>
               ) : null}
 
+              <LogoutButton />
+
               {merchant && role !== "SUPERADMIN" ? (
                 <MerchantOpenCloseToggle
                   merchantSlug={merchant.slug}
@@ -58,7 +61,16 @@ export default async function AdminHomePage() {
           </div>
 
           <div className="mt-6 grid gap-3 text-sm text-white/80">
-            {merchant ? (
+            {merchant && !merchant.isActive ? (
+              <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-yellow-100">
+                Seu estabelecimento está aguardando aprovação do administrador. Entre em contato com o suporte.
+              </div>
+            ) : merchant && merchant.isBlocked ? (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-red-100">
+                O acesso ao seu estabelecimento está bloqueado. Entre em contato com o suporte.
+              </div>
+            ) : null}
+            {merchant && merchant.isActive && !merchant.isBlocked ? (
               <div className="rounded-xl border border-white/10 bg-black/20 p-4">
                 <div className="font-medium text-white">{merchant.name}</div>
                 <div className="mt-1 text-white/70">
@@ -90,11 +102,11 @@ export default async function AdminHomePage() {
                   </Link>
                 </div>
               </div>
-            ) : (
+            ) : !merchant ? (
               <div className="rounded-xl border border-yellow-500/30 bg-yellow-500/10 p-4 text-yellow-100">
                 Seu usuário não está vinculado a nenhuma lanchonete ainda.
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>

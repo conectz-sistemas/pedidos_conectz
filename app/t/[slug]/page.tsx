@@ -12,7 +12,7 @@ export default async function TenantHome({
   const { slug } = await params;
   const merchant = await prisma.merchant.findUnique({
     where: { slug },
-    select: { id: true, name: true, isOpen: true },
+    select: { id: true, name: true, isOpen: true, isActive: true, isBlocked: true },
   });
 
   if (!merchant) {
@@ -20,6 +20,21 @@ export default async function TenantHome({
       <main>
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
           Lanchonete não encontrada.
+        </div>
+      </main>
+    );
+  }
+
+  if (!merchant.isActive || merchant.isBlocked) {
+    return (
+      <main>
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+          <h1 className="text-xl font-semibold">{merchant.name}</h1>
+          <p className="mt-2 text-white/70">
+            {!merchant.isActive
+              ? "Este estabelecimento está aguardando aprovação do administrador."
+              : "O acesso a este estabelecimento está temporariamente bloqueado."}
+          </p>
         </div>
       </main>
     );

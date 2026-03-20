@@ -1,6 +1,7 @@
 "use client";
 
 import { formatBRLFromCents } from "@/lib/money";
+import { formatPaymentMethod, formatPaymentTiming } from "@/lib/orderLabels";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -94,8 +95,10 @@ export function OrderTracker(props: { merchantSlug: string; publicCode: string }
               </span>
             </div>
             <div className="mt-1">
-              Pagamento: <span className="text-white">{order.paymentMethod}</span>{" "}
-              <span className="text-white/60">({order.paymentTiming})</span>
+              Pagamento:{" "}
+              <span className="text-white">
+                {formatPaymentMethod(order.paymentMethod)} — {formatPaymentTiming(order.paymentTiming)}
+              </span>
             </div>
             {order.paymentMethod === "CASH" && order.cashChangeForCents ? (
               <div className="mt-1">

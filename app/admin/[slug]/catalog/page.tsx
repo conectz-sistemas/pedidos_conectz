@@ -4,6 +4,8 @@ import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { CreateProductForm } from "@/components/CreateProductForm";
+import { LogoutButton } from "@/components/LogoutButton";
+import { ProductDeleteButton } from "@/components/ProductDeleteButton";
 
 export const dynamic = "force-dynamic";
 
@@ -19,13 +21,23 @@ export default async function CatalogPage({
 
   const merchant = await prisma.merchant.findUnique({
     where: { slug },
-    select: { id: true, name: true },
+    select: { id: true, name: true, isBlocked: true },
   });
   if (!merchant) {
     return (
       <main className="min-h-screen p-6">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
           Lanchonete não encontrada.
+        </div>
+      </main>
+    );
+  }
+
+  if (role !== "SUPERADMIN" && merchantId === merchant.id && merchant.isBlocked) {
+    return (
+      <main className="min-h-screen p-6">
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-6 text-red-100">
+          O acesso ao seu estabelecimento está bloqueado.
         </div>
       </main>
     );
@@ -85,7 +97,13 @@ export default async function CatalogPage({
     prisma.product.findMany({
       where: { merchantId: merchant.id },
       orderBy: { createdAt: "desc" },
-      select: { id: true, name: true, isActive: true, basePriceCents: true },
+      select: {
+        id: true,
+        name: true,
+        isActive: true,
+        basePriceCents: true,
+        _count: { select: { defaultIngredients: true } },
+      },
     }),
   ]);
 
@@ -108,6 +126,7 @@ export default async function CatalogPage({
               <Link className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs" href={`/admin/${slug}/orders`}>
                 Ver pedidos
               </Link>
+              <LogoutButton />
             </div>
           </div>
         </div>
@@ -195,15 +214,21 @@ export default async function CatalogPage({
               <div key={p.id} className="rounded-xl border border-white/10 bg-black/20 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-white font-medium">{p.name}</div>
-                  <Link
-                    className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs"
-                    href={`/admin/${slug}/catalog/product/${p.id}`}
-                  >
-                    Editar personalização
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs"
+                      href={`/admin/${slug}/catalog/product/${p.id}`}
+                    >
+                      Editar personalização
+                    </Link>
+                    <ProductDeleteButton merchantSlug={slug} productId={p.id} productName={p.name} />
+                  </div>
                 </div>
                 <div className="mt-1 text-xs text-white/60">
                   Ativo: {p.isActive ? "sim" : "não"} • Base: R$ {(p.basePriceCents / 100).toFixed(2)}
+                  {p._count.defaultIngredients === 0 ? (
+                    <span className="ml-2 text-yellow-400">• Configure ingredientes e equivalentes</span>
+                  ) : null}
                 </div>
               </div>
             ))}

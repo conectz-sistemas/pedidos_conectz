@@ -1,5 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { LogoutButton } from "@/components/LogoutButton";
 import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 
@@ -17,12 +18,19 @@ export default async function BillingPage({
 
   const merchant = await prisma.merchant.findUnique({
     where: { slug },
-    select: { id: true, name: true, subscriptionStatus: true },
+    select: { id: true, name: true, subscriptionStatus: true, isBlocked: true },
   });
   if (!merchant) {
     return (
       <main className="min-h-screen p-6">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">Lanchonete não encontrada.</div>
+      </main>
+    );
+  }
+  if (role !== "SUPERADMIN" && merchantId === merchant.id && merchant.isBlocked) {
+    return (
+      <main className="min-h-screen p-6">
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-6 text-red-100">O acesso está bloqueado.</div>
       </main>
     );
   }
@@ -37,8 +45,18 @@ export default async function BillingPage({
   return (
     <main className="min-h-screen p-6">
       <div className="mx-auto max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-6">
-        <h1 className="text-xl font-semibold">Plano de validação</h1>
-        <p className="mt-1 text-sm text-white/70">{merchant.name}</p>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h1 className="text-xl font-semibold">Plano de validação</h1>
+            <p className="mt-1 text-sm text-white/70">{merchant.name}</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Link className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs" href="/admin">
+              Voltar ao painel
+            </Link>
+            <LogoutButton />
+          </div>
+        </div>
 
         <div className="mt-6 rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-white/80">
           Status atual:{" "}

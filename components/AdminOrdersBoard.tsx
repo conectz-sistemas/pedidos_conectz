@@ -1,6 +1,7 @@
 "use client";
 
 import { formatBRLFromCents } from "@/lib/money";
+import { formatPaymentMethod, formatPaymentTiming } from "@/lib/orderLabels";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 type Modification = {
@@ -145,7 +146,8 @@ export function AdminOrdersBoard({ merchantSlug }: { merchantSlug: string }) {
                 <div className="text-sm text-white/60">#{o.publicCode}</div>
                 <div className="mt-1 font-medium text-white">{o.customerName}</div>
                 <div className="mt-1 text-sm text-white/70">
-                  {o.deliveryType === "delivery" ? "Delivery" : "Retirada"} • {o.paymentMethod} •{" "}
+                  {o.deliveryType === "delivery" ? "Delivery" : "Retirada"} •{" "}
+                  {formatPaymentMethod(o.paymentMethod)} — {formatPaymentTiming(o.paymentTiming)} •{" "}
                   {formatBRLFromCents(o.totalCents)}
                 </div>
                 <div className="mt-1 text-xs text-white/50">
