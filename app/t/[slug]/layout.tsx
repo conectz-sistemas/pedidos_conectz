@@ -23,29 +23,29 @@ export default async function TenantLayout({
   return (
     <div className="min-h-screen">
       <header className="sticky top-0 z-10 border-b border-white/10 bg-black/40 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
-          <Link className="font-semibold" href={`/t/${slug}`}>
+        <div className="mx-auto flex max-w-3xl items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-4 sm:py-3">
+          <Link className="truncate font-semibold text-sm sm:text-base min-w-0" href={`/t/${slug}`}>
             Pedidos ConectZ
           </Link>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             {isMerchantViewingOwnMenu ? (
-              <Link className="btn" href="/admin">
-                Voltar ao painel
+              <Link className="btn btn-sm" href="/admin">
+                Painel
               </Link>
             ) : null}
             <Link
-              className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-white/80 hover:bg-white/10 hover:text-white"
+              className="btn btn-sm btn-ghost"
               href={`/t/${slug}/history`}
             >
               Histórico
             </Link>
-            <Link className="btn" href={`/t/${slug}/cart`}>
+            <Link className="btn btn-sm btn-primary" href={`/t/${slug}/cart`}>
               Carrinho
             </Link>
           </div>
         </div>
       </header>
-      <div className="mx-auto max-w-3xl px-4 py-6">{children}</div>
+      <div className="mx-auto max-w-3xl px-3 py-4 sm:px-4 sm:py-6">{children}</div>
     </div>
   );
 }

@@ -36,15 +36,15 @@ export function ProductImageUploader(props: {
     <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
       <h2 className="font-semibold">Imagem do produto</h2>
       <p className="mt-1 text-sm text-white/70">
-        Envie uma imagem PNG ou JPEG (até 5MB). Ela será salva e usada no catálogo do cliente.
+        Envie PNG, JPEG ou WebP (até 5MB). Aceita fotos da câmera.
       </p>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <label className="rounded-xl border border-white/25 bg-white/10 px-4 py-2 text-xs font-medium text-white cursor-pointer">
+        <label className="flex items-center justify-center min-h-[44px] rounded-xl border border-white/25 bg-white/10 px-4 py-3 text-sm font-medium text-white cursor-pointer">
           {loading ? "Enviando..." : "Escolher imagem"}
           <input
             type="file"
-            accept="image/png,image/jpeg"
+            accept="image/png,image/jpeg,image/webp"
             className="hidden"
             disabled={loading}
             onChange={(e) => onPick(e.target.files?.[0] ?? null)}

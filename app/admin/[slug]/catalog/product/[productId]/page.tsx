@@ -122,10 +122,10 @@ export default async function ProductEditPage({
   }));
 
   return (
-    <main className="min-h-screen p-6">
+    <main className="min-h-screen p-4 sm:p-6">
       <div className="mx-auto max-w-5xl grid gap-4">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-6">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <div className="text-sm text-white/60">{merchant.name}</div>
               <h1 className="mt-1 text-xl font-semibold">{product.name}</h1>
@@ -134,12 +134,12 @@ export default async function ProductEditPage({
                 <span className="text-white">{product.isActive ? "sim" : "não"}</span>
               </div>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <Link className="underline text-sm" href={`/admin/${slug}/catalog`}>
-                Voltar ao cardápio
+            <div className="flex flex-wrap items-center gap-2">
+              <Link className="btn btn-sm" href={`/admin/${slug}/catalog`}>
+                Cardápio
               </Link>
-              <Link className="underline text-sm" href={`/t/${slug}/product/${product.id}`}>
-                Ver no cliente
+              <Link className="btn btn-sm btn-ghost" href={`/t/${slug}/product/${product.id}`}>
+                Ver cliente
               </Link>
               <LogoutButton />
               <ProductDeleteButton

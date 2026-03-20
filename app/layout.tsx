@@ -6,6 +6,11 @@ export const metadata = {
   description: "Pedidos digitais simples para lanchonetes",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
