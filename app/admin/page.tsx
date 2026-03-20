@@ -30,16 +30,16 @@ export default async function AdminHomePage() {
   return (
     <main className="min-h-screen p-6">
       <div className="mx-auto max-w-4xl">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-          <div className="flex items-center justify-between gap-4">
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h1 className="text-xl font-semibold">Painel</h1>
-              <p className="mt-1 text-sm text-white/70">
+              <p className="mt-1 truncate text-sm text-white/70 max-w-[200px] sm:max-w-none">
                 Logado como <span className="text-white">{session.user.email}</span>
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               {role === "SUPERADMIN" ? (
                 <Link
                   className="rounded-xl border border-white/25 bg-white/10 px-3 py-1.5 text-xs text-white"
@@ -84,20 +84,20 @@ export default async function AdminHomePage() {
                   <span className="text-white">{merchant.subscriptionStatus ?? "não vinculada"}</span>
                 </div>
 
-                <div className="mt-4 flex flex-wrap gap-3">
+                <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
                   <Link
-                    className="btn btn-primary"
+                    className="btn btn-primary text-center"
                     href={`/admin/${merchant.slug}/orders`}
                   >
                     Pedidos
                   </Link>
-                  <Link className="btn" href={`/admin/${merchant.slug}/catalog`}>
+                  <Link className="btn text-center" href={`/admin/${merchant.slug}/catalog`}>
                     Cardápio
                   </Link>
-                  <Link className="btn" href={`/admin/${merchant.slug}/billing`}>
+                  <Link className="btn text-center col-span-2 sm:col-span-1" href={`/admin/${merchant.slug}/billing`}>
                     Assinatura
                   </Link>
-                  <Link className="btn" href={`/t/${merchant.slug}`}>
+                  <Link className="btn text-center col-span-2" href={`/t/${merchant.slug}`}>
                     Abrir cardápio do cliente
                   </Link>
                 </div>

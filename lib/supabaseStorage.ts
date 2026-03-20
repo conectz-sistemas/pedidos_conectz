@@ -41,7 +41,9 @@ export async function uploadPublicImageToSupabase(input: {
 }) {
   const env = supabaseEnv();
   if (!env) {
-    throw new Error("Supabase não configurado (NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY).");
+    throw new Error(
+      "Storage de imagens não configurado. Configure NEXT_PUBLIC_SUPABASE_URL e SUPABASE_SERVICE_ROLE_KEY no Vercel (Settings → Environment Variables). Veja o README para detalhes."
+    );
   }
 
   const safeName = sanitizeFileName(input.file.name || "image");

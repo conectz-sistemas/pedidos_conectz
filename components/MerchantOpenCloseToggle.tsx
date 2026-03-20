@@ -43,9 +43,9 @@ export function MerchantOpenCloseToggle({
       type="button"
       onClick={toggle}
       disabled={loading}
-      className={`rounded-xl px-3 py-1.5 text-sm border ${classes} ${loading ? "opacity-70" : ""}`}
+      className={`rounded-xl px-3 py-2 text-sm border min-h-[40px] ${classes} ${loading ? "opacity-70" : ""}`}
     >
-      {loading ? "Atualizando..." : isOpen ? "Aberto (clique para fechar)" : "Fechado (clique para abrir)"}
+      {loading ? "..." : isOpen ? "Aberto" : "Fechado"}
     </button>
   );
 }

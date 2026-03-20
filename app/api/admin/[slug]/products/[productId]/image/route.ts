@@ -41,8 +41,9 @@ export async function POST(
       return NextResponse.json({ error: "Arquivo não enviado" }, { status: 400 });
     }
 
-    if (!["image/png", "image/jpeg"].includes(file.type)) {
-      return NextResponse.json({ error: "A imagem deve ser PNG ou JPEG" }, { status: 400 });
+    const allowedTypes = ["image/png", "image/jpeg", "image/webp"];
+    if (!allowedTypes.includes(file.type)) {
+      return NextResponse.json({ error: "A imagem deve ser PNG, JPEG ou WebP" }, { status: 400 });
     }
     const maxBytes = 5 * 1024 * 1024;
     if (file.size > maxBytes) {

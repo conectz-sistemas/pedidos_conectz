@@ -54,8 +54,8 @@ export default async function TenantHome({
 
   return (
     <main>
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
-        <div className="flex items-start justify-between gap-4">
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h1 className="text-xl font-semibold">{merchant.name}</h1>
             <div className="mt-1 text-sm text-white/70">
@@ -77,9 +77,9 @@ export default async function TenantHome({
             <Link
               key={p.id}
               href={`/t/${slug}/product/${p.id}`}
-              className="block rounded-2xl border border-white/10 bg-black/20 p-4 hover:border-white/20"
+              className="block rounded-2xl border border-white/10 bg-black/20 p-4 hover:border-white/20 active:border-white/20"
             >
-              <div className="flex gap-4">
+              <div className="flex gap-3 sm:gap-4">
                 <div className="flex-1">
                   <div className="flex items-center justify-between gap-3">
                     <div className="font-medium text-white">{p.name}</div>
