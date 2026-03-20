@@ -56,21 +56,22 @@ const statusFlow: { id: string; label: string }[] = [
   { id: "CANCELED", label: "Cancelar" },
 ];
 
-function makeBeep() {
+async function makeBeep() {
   try {
     const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    if (ctx.state === "suspended") {
+      await ctx.resume();
+    }
     const o = ctx.createOscillator();
     const g = ctx.createGain();
     o.type = "sine";
     o.frequency.value = 880;
-    g.gain.value = 0.05;
+    g.gain.value = 0.2;
     o.connect(g);
     g.connect(ctx.destination);
-    o.start();
-    setTimeout(() => {
-      o.stop();
-      ctx.close();
-    }, 180);
+    o.start(0);
+    o.stop(ctx.currentTime + 0.25);
+    setTimeout(() => ctx.close(), 400);
   } catch {
     // ignore
   }
@@ -80,6 +81,23 @@ export function AdminOrdersBoard({ merchantSlug }: { merchantSlug: string }) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [error, setError] = useState<string | null>(null);
   const seen = useRef<Set<string>>(new Set());
+  const hasLoadedOnce = useRef(false);
+  const audioUnlocked = useRef(false);
+
+  useEffect(() => {
+    if (audioUnlocked.current) return;
+    const unlock = () => {
+      audioUnlocked.current = true;
+      const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      if (ctx.state === "suspended") ctx.resume();
+    };
+    document.addEventListener("click", unlock, { once: true });
+    document.addEventListener("keydown", unlock, { once: true });
+    return () => {
+      document.removeEventListener("click", unlock);
+      document.removeEventListener("keydown", unlock);
+    };
+  }, []);
 
   async function refresh() {
     const res = await fetch(`/api/admin/${merchantSlug}/orders`, { cache: "no-store" });
@@ -91,12 +109,11 @@ export function AdminOrdersBoard({ merchantSlug }: { merchantSlug: string }) {
     setError(null);
     const next: Order[] = json.orders ?? [];
 
-    // alerta sonoro quando aparecer pedido novo (primeiro load não apita)
-    if (orders.length > 0) {
-      const newOnes = next.filter((o) => !seen.current.has(o.id));
-      if (newOnes.length > 0) makeBeep();
-    }
+    const newOnes = next.filter((o) => !seen.current.has(o.id));
+    if (hasLoadedOnce.current && newOnes.length > 0) makeBeep();
     next.forEach((o) => seen.current.add(o.id));
+    hasLoadedOnce.current = true;
+
     setOrders(next);
   }
 
@@ -146,7 +163,7 @@ export function AdminOrdersBoard({ merchantSlug }: { merchantSlug: string }) {
                 <div className="text-sm text-white/60">#{o.publicCode}</div>
                 <div className="mt-1 font-medium text-white">{o.customerName}</div>
                 <div className="mt-1 text-sm text-white/70">
-                  {o.deliveryType === "delivery" ? "Delivery" : "Retirada"} •{" "}
+                  {o.deliveryType === "delivery" ? "Receber em casa" : "Retirar no local"} •{" "}
                   {formatPaymentMethod(o.paymentMethod)} — {formatPaymentTiming(o.paymentTiming)} •{" "}
                   {formatBRLFromCents(o.totalCents)}
                 </div>

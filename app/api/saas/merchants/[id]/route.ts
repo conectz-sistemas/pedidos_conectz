@@ -3,6 +3,41 @@ import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { NextResponse } from "next/server";
 
+export async function DELETE(
+  _req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await getServerSession(authOptions);
+    const role = (session?.user as any)?.role as string | undefined;
+    if (!session?.user?.email || role !== "SUPERADMIN") {
+      return NextResponse.json({ error: "Sem permissão" }, { status: 403 });
+    }
+
+    const { id } = await params;
+    const merchant = await prisma.merchant.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    if (!merchant) return NextResponse.json({ error: "Estabelecimento não encontrado" }, { status: 404 });
+
+    await prisma.$transaction(async (tx) => {
+      await tx.order.deleteMany({ where: { merchantId: id } });
+      await tx.product.deleteMany({ where: { merchantId: id } });
+      await tx.ingredient.deleteMany({ where: { merchantId: id } });
+      await tx.ingredientGroup.deleteMany({ where: { merchantId: id } });
+      await tx.user.deleteMany({ where: { merchantId: id } });
+      await tx.merchant.delete({ where: { id } });
+    });
+
+    return NextResponse.json({ ok: true });
+  } catch (e: any) {
+    const msg = e?.message ?? String(e);
+    console.error("[saas-merchant-delete] Erro:", msg);
+    return NextResponse.json({ error: msg || "Erro ao excluir" }, { status: 500 });
+  }
+}
+
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> }

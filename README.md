@@ -40,6 +40,7 @@ Preencha:
 - `NEXTAUTH_URL` (ex: `http://localhost:3000`)
 - `NEXTAUTH_SECRET` (qualquer string forte)
 - `NEXT_PUBLIC_SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` (para upload de imagens)
+- `RESEND_API_KEY` e `RESEND_FROM_EMAIL` (para verificação de email — ver [docs/CONFIGURAR-RESEND.md](docs/CONFIGURAR-RESEND.md))
 
 ### 3) Migrar o banco e rodar seed
 
@@ -48,9 +49,9 @@ npx prisma migrate dev
 npx prisma db seed
 ```
 
-> **Nota:** Se `prisma migrate dev` falhar com timeout (Neon), use `npx prisma db push` para aplicar o schema.
+> **Nota:** Se `prisma migrate dev` falhar com timeout (Neon), use `npx prisma db push` para aplicar o schema. Se aparecer "Drift detected" (banco alterado por `db push`), crie uma migração para as colunas faltantes e marque como aplicada: `npx prisma migrate resolve --applied NOME_DA_MIGRACAO`.
 
-O seed cria apenas o **dono do SaaS** para o primeiro acesso (ou use `/start-dono`).
+O seed cria apenas o **dono do SaaS** para o primeiro acesso.
 
 **Dono criado direto no banco:** Se o login falhar (senha em texto puro), corrija com:
 

@@ -31,6 +31,7 @@ export const authOptions: NextAuthOptions = {
             passwordHash: true,
             role: true,
             merchantId: true,
+            emailVerifiedAt: true,
             merchant: { select: { isActive: true, isBlocked: true } },
           },
         });
@@ -38,6 +39,10 @@ export const authOptions: NextAuthOptions = {
 
         const ok = await bcrypt.compare(parsed.data.password, user.passwordHash);
         if (!ok) return null;
+
+        if (user.role === "MERCHANT_ADMIN" && !user.emailVerifiedAt) {
+          return null;
+        }
 
         if (user.merchantId && user.merchant) {
           if (!user.merchant.isActive || user.merchant.isBlocked) return null;

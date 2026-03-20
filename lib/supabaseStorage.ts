@@ -12,6 +12,28 @@ export function supabaseEnv() {
   return { url, serviceKey };
 }
 
+const MAX_RETRIES = 3;
+const RETRY_DELAY_MS = 1500;
+
+/** Erro que não deve ser retentado (ex: 404, 403). */
+class NoRetryError extends Error {}
+
+function isRetryableStatus(status: number): boolean {
+  return status >= 500 || status === 408;
+}
+
+function parseStorageError(status: number, text: string): string {
+  try {
+    const json = JSON.parse(text);
+    if (json?.code === "DatabaseTimeout" || json?.error === "DatabaseTimeout") {
+      return "O servidor de imagens está demorando. Tente novamente em alguns segundos.";
+    }
+  } catch {
+    // ignore
+  }
+  return `Falha ao enviar imagem para o Storage (${status}). ${text}`.trim();
+}
+
 export async function uploadPublicImageToSupabase(input: {
   bucket: string;
   path: string;
@@ -28,24 +50,46 @@ export async function uploadPublicImageToSupabase(input: {
 
   const uploadUrl = `${env.url}/storage/v1/object/${encodeURIComponent(input.bucket)}/${finalPath}`;
   const arrayBuffer = await input.file.arrayBuffer();
+  const body = Buffer.from(arrayBuffer);
+  const contentType = input.file.type || "application/octet-stream";
 
-  const res = await fetch(uploadUrl, {
-    method: "POST",
-    headers: {
-      authorization: `Bearer ${env.serviceKey}`,
-      apikey: env.serviceKey,
-      "content-type": input.file.type || "application/octet-stream",
-      "x-upsert": "true",
-    },
-    body: Buffer.from(arrayBuffer),
-  });
+  let lastError: Error | null = null;
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const res = await fetch(uploadUrl, {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${env.serviceKey}`,
+          apikey: env.serviceKey,
+          "content-type": contentType,
+          "x-upsert": "true",
+        },
+        body,
+      });
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(`Falha ao enviar imagem para o Storage (${res.status}). ${text}`.trim());
+      if (res.ok) {
+        const publicUrl = `${env.url}/storage/v1/object/public/${input.bucket}/${finalPath}`;
+        return { publicUrl, path: finalPath };
+      }
+
+      const text = await res.text().catch(() => "");
+      const msg = parseStorageError(res.status, text);
+      lastError = new Error(msg);
+
+      if (isRetryableStatus(res.status) && attempt < MAX_RETRIES) {
+        await new Promise((r) => setTimeout(r, RETRY_DELAY_MS * attempt));
+        continue;
+      }
+      throw new NoRetryError(msg);
+    } catch (e) {
+      lastError = e instanceof Error ? e : new Error(String(e));
+      if (e instanceof NoRetryError || attempt === MAX_RETRIES) {
+        throw lastError;
+      }
+      await new Promise((r) => setTimeout(r, RETRY_DELAY_MS * attempt));
+    }
   }
 
-  const publicUrl = `${env.url}/storage/v1/object/public/${input.bucket}/${finalPath}`;
-  return { publicUrl, path: finalPath };
+  throw lastError ?? new Error("Falha ao enviar imagem");
 }
 
