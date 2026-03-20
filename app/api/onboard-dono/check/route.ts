@@ -1,10 +1,6 @@
-import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
+/** Rota desabilitada por segurança. */
 export async function GET() {
-  const existing = await prisma.user.findFirst({
-    where: { role: "SUPERADMIN" },
-    select: { id: true },
-  });
-  return NextResponse.json({ canCreate: !existing });
+  return NextResponse.json({ canCreate: false }, { status: 403 });
 }

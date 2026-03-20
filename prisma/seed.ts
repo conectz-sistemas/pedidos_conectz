@@ -13,7 +13,7 @@ async function main() {
   const passwordHash = await bcrypt.hash("admin123", 10);
 
   // Cria o dono do SaaS (SUPERADMIN) para o primeiro acesso.
-  // Use /start-dono para criar o primeiro dono em produção.
+  // O dono é criado apenas direto no banco (por segurança).
   await prisma.user.upsert({
     where: { email: "dono@pedidosconectz.com" },
     update: { role: "SUPERADMIN", merchantId: null },

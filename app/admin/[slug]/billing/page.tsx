@@ -1,5 +1,6 @@
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { DeleteAccountButton } from "@/components/DeleteAccountButton";
 import { LogoutButton } from "@/components/LogoutButton";
 import { getServerSession } from "next-auth/next";
 import Link from "next/link";
@@ -79,6 +80,14 @@ export default async function BillingPage({
 
         <div className="mt-4 text-xs text-white/60">
           MVP: sem pagamento nesta fase. O objetivo é validar fluxo e estabilidade com múltiplos usuários.
+        </div>
+
+        <div className="mt-8 border-t border-white/10 pt-6">
+          <h2 className="text-sm font-medium text-white/80">Zona de perigo</h2>
+          <p className="mt-1 text-xs text-white/60">
+            Excluir sua conta remove permanentemente o estabelecimento e todos os dados (produtos, pedidos, etc.).
+          </p>
+          <DeleteAccountButton merchantSlug={slug} />
         </div>
       </div>
     </main>

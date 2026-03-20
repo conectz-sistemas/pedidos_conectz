@@ -47,8 +47,7 @@ function StartPageContent() {
       const json = await res.json().catch(() => null);
       if (!res.ok) throw new Error(json?.error ?? "Não foi possível criar sua conta.");
 
-      // Conta criada. Comerciantes precisam de aprovação do dono para acessar.
-      router.push("/start?success=1");
+      router.push(json.requiresVerification ? "/start?success=1&verify=1" : "/start?success=1");
     } catch (e: any) {
       setError(e?.message ?? "Erro");
       setLoading(false);
@@ -56,14 +55,16 @@ function StartPageContent() {
   }
 
   if (success) {
+    const needsVerification = search.get("verify") === "1";
     return (
       <main className="min-h-screen p-6">
         <div className="mx-auto max-w-xl">
           <div className="rounded-2xl border border-green-500/30 bg-green-500/10 p-6">
             <h1 className="text-xl font-semibold text-green-100">Conta criada!</h1>
             <p className="mt-2 text-green-200/90">
-              Seu estabelecimento foi cadastrado. Aguarde a aprovação do administrador para acessar o painel.
-              Você receberá acesso em breve.
+              {needsVerification
+                ? "Enviamos um email de confirmação. Clique no link para verificar seu email e, em seguida, aguarde a aprovação do administrador."
+                : "Seu estabelecimento foi cadastrado. Aguarde a aprovação do administrador para acessar o painel."}
             </p>
             <button
               type="button"

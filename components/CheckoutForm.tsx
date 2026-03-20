@@ -140,7 +140,7 @@ export function CheckoutForm({
               }`}
               onClick={() => setDeliveryType("pickup")}
             >
-              Retirada
+              Retirar no local
             </button>
             <button
               type="button"
@@ -151,7 +151,7 @@ export function CheckoutForm({
               }`}
               onClick={() => setDeliveryType("delivery")}
             >
-              Delivery
+              Receber em casa
             </button>
           </div>
 

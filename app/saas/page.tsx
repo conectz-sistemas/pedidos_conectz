@@ -39,6 +39,10 @@ export default async function SaasPage() {
       isBlocked: true,
       subscriptionStatus: true,
       createdAt: true,
+      admins: {
+        take: 1,
+        select: { email: true, emailVerifiedAt: true },
+      },
     },
   });
 
@@ -71,6 +75,7 @@ export default async function SaasPage() {
                   <th className="p-3 text-left font-medium">Estabelecimento</th>
                   <th className="p-3 text-left font-medium">Slug</th>
                   <th className="p-3 text-left font-medium">Cadastro</th>
+                  <th className="p-3 text-left font-medium">Email verificado</th>
                   <th className="p-3 text-left font-medium">Status</th>
                   <th className="p-3 text-left font-medium">Assinatura</th>
                   <th className="p-3 text-left font-medium">Ações</th>
@@ -88,6 +93,13 @@ export default async function SaasPage() {
                         </Link>
                       </td>
                       <td className="p-3 text-white/80">{formatDate(m.createdAt)}</td>
+                      <td className="p-3 text-white/80">
+                        {m.admins[0]?.emailVerifiedAt ? (
+                          <span className="text-green-400">Sim</span>
+                        ) : (
+                          <span className="text-yellow-400">Não</span>
+                        )}
+                      </td>
                       <td className={`p-3 ${st.cls}`}>{st.label}</td>
                       <td className="p-3 text-white/80">
                         {m.subscriptionStatus ?? "—"}
@@ -95,6 +107,7 @@ export default async function SaasPage() {
                       <td className="p-3">
                         <SaasMerchantActions
                           merchantId={m.id}
+                          merchantName={m.name}
                           isActive={m.isActive}
                           isBlocked={m.isBlocked}
                         />
@@ -104,7 +117,7 @@ export default async function SaasPage() {
                 })}
                 {merchants.length === 0 ? (
                   <tr>
-                    <td className="p-3 text-white/70" colSpan={6}>
+                    <td className="p-3 text-white/70" colSpan={7}>
                       Nenhum estabelecimento cadastrado ainda.
                     </td>
                   </tr>

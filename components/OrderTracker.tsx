@@ -91,7 +91,7 @@ export function OrderTracker(props: { merchantSlug: string; publicCode: string }
             <div className="mt-1">
               Entrega:{" "}
               <span className="text-white">
-                {order.deliveryType === "delivery" ? "Delivery" : "Retirada"}
+                {order.deliveryType === "delivery" ? "Receber em casa" : "Retirar no local"}
               </span>
             </div>
             <div className="mt-1">

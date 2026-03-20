@@ -55,6 +55,13 @@ export async function POST(
     }
 
     let { defaultIngredients, extras } = parsed.data;
+    // Dedupe defaultIngredients por ingredientId (evita unique constraint)
+    const seenDefault = new Set<string>();
+    defaultIngredients = defaultIngredients.filter((d) => {
+      if (seenDefault.has(d.ingredientId)) return false;
+      seenDefault.add(d.ingredientId);
+      return true;
+    });
     // Dedupe extras por ingredientId (mantém o último)
     const seenExtra = new Set<string>();
     extras = extras.filter((e) => {

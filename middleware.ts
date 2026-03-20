@@ -5,6 +5,11 @@ import { getToken } from "next-auth/jwt";
 export async function middleware(req: NextRequest) {
   const pathname = req.nextUrl.pathname;
 
+  // Rota desabilitada por segurança (criação de dono)
+  if (pathname === "/start-dono") {
+    return new NextResponse(null, { status: 404 });
+  }
+
   // Rotas públicas do admin
   if (pathname.startsWith("/admin/login")) return NextResponse.next();
 
@@ -23,6 +28,6 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/saas/:path*"],
+  matcher: ["/admin/:path*", "/saas/:path*", "/start-dono"],
 };
 
