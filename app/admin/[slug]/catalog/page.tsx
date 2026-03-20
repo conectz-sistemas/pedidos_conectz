@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { CreateProductForm } from "@/components/CreateProductForm";
+import { LogoutButton } from "@/components/LogoutButton";
 import { ProductDeleteButton } from "@/components/ProductDeleteButton";
 
 export const dynamic = "force-dynamic";
@@ -20,13 +21,23 @@ export default async function CatalogPage({
 
   const merchant = await prisma.merchant.findUnique({
     where: { slug },
-    select: { id: true, name: true },
+    select: { id: true, name: true, isBlocked: true },
   });
   if (!merchant) {
     return (
       <main className="min-h-screen p-6">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
           Lanchonete não encontrada.
+        </div>
+      </main>
+    );
+  }
+
+  if (role !== "SUPERADMIN" && merchantId === merchant.id && merchant.isBlocked) {
+    return (
+      <main className="min-h-screen p-6">
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-6 text-red-100">
+          O acesso ao seu estabelecimento está bloqueado.
         </div>
       </main>
     );
@@ -115,6 +126,7 @@ export default async function CatalogPage({
               <Link className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs" href={`/admin/${slug}/orders`}>
                 Ver pedidos
               </Link>
+              <LogoutButton />
             </div>
           </div>
         </div>

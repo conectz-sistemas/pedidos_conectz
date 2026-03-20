@@ -31,12 +31,17 @@ export const authOptions: NextAuthOptions = {
             passwordHash: true,
             role: true,
             merchantId: true,
+            merchant: { select: { isActive: true, isBlocked: true } },
           },
         });
         if (!user) return null;
 
         const ok = await bcrypt.compare(parsed.data.password, user.passwordHash);
         if (!ok) return null;
+
+        if (user.merchantId && user.merchant) {
+          if (!user.merchant.isActive || user.merchant.isBlocked) return null;
+        }
 
         return {
           id: user.id,

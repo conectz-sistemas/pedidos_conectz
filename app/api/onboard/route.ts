@@ -41,6 +41,7 @@ export async function POST(req: Request) {
         isOpen: true,
         subscriptionStatus: null,
         cancellationFeeCents: 0,
+        isActive: false,
       },
       select: { id: true, slug: true },
     });

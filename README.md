@@ -50,11 +50,17 @@ npx prisma db seed
 
 > **Nota:** Se `prisma migrate dev` falhar com timeout (Neon), use `npx prisma db push` para aplicar o schema.
 
-O seed cria apenas o **dono do SaaS** para o primeiro acesso:
+O seed cria apenas o **dono do SaaS** para o primeiro acesso (ou use `/start-dono`).
 
-- **Dono**: `dono@pedidosconectz.com` / senha `admin123`
+**Dono criado direto no banco:** Se o login falhar (senha em texto puro), corrija com:
 
-Novas lanchonetes são criadas via `/start` ou `/start-dono` (primeiro dono em produção).
+```bash
+EMAIL=seu@email.com SENHA='sua_senha' npx tsx scripts/fix-dono-password.ts
+```
+
+> Use aspas na senha se tiver caracteres especiais. Ver [docs/LOGIN-SUPERADMIN.md](docs/LOGIN-SUPERADMIN.md) para o fluxo completo.
+
+**Novos comerciantes:** Cadastram-se em `/start` e ficam **pendentes** até o dono aprovar em `/saas`.
 
 ### 4) Subir o projeto (desenvolvimento)
 

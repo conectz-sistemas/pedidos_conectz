@@ -2,6 +2,7 @@ import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import Link from "next/link";
+import { LogoutButton } from "@/components/LogoutButton";
 import { ProductImageUploader } from "@/components/ProductImageUploader";
 import { ProductPersonalizationEditor } from "@/components/ProductPersonalizationEditor";
 import { ProductDeleteButton } from "@/components/ProductDeleteButton";
@@ -20,13 +21,22 @@ export default async function ProductEditPage({
 
   const merchant = await prisma.merchant.findUnique({
     where: { slug },
-    select: { id: true, name: true },
+    select: { id: true, name: true, isBlocked: true },
   });
   if (!merchant) {
     return (
       <main className="min-h-screen p-6">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
           Lanchonete não encontrada.
+        </div>
+      </main>
+    );
+  }
+  if (role !== "SUPERADMIN" && merchantId === merchant.id && merchant.isBlocked) {
+    return (
+      <main className="min-h-screen p-6">
+        <div className="rounded-2xl border border-red-500/30 bg-red-500/10 p-6 text-red-100">
+          O acesso ao seu estabelecimento está bloqueado.
         </div>
       </main>
     );
@@ -131,6 +141,7 @@ export default async function ProductEditPage({
               <Link className="underline text-sm" href={`/t/${slug}/product/${product.id}`}>
                 Ver no cliente
               </Link>
+              <LogoutButton />
               <ProductDeleteButton
                 merchantSlug={slug}
                 productId={product.id}

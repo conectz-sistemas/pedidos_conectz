@@ -1,8 +1,7 @@
 "use client";
 
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useState } from "react";
 
 function slugify(input: string) {
   return input
@@ -15,8 +14,10 @@ function slugify(input: string) {
     .slice(0, 30);
 }
 
-export default function StartPage() {
+function StartPageContent() {
   const router = useRouter();
+  const search = useSearchParams();
+  const success = search.get("success") === "1";
   const [merchantName, setMerchantName] = useState("");
   const [slug, setSlug] = useState("");
   const [email, setEmail] = useState("");
@@ -46,17 +47,35 @@ export default function StartPage() {
       const json = await res.json().catch(() => null);
       if (!res.ok) throw new Error(json?.error ?? "Não foi possível criar sua conta.");
 
-      // login automático
-      await signIn("credentials", {
-        email,
-        password,
-        redirect: true,
-        callbackUrl: "/admin",
-      });
+      // Conta criada. Comerciantes precisam de aprovação do dono para acessar.
+      router.push("/start?success=1");
     } catch (e: any) {
       setError(e?.message ?? "Erro");
       setLoading(false);
     }
+  }
+
+  if (success) {
+    return (
+      <main className="min-h-screen p-6">
+        <div className="mx-auto max-w-xl">
+          <div className="rounded-2xl border border-green-500/30 bg-green-500/10 p-6">
+            <h1 className="text-xl font-semibold text-green-100">Conta criada!</h1>
+            <p className="mt-2 text-green-200/90">
+              Seu estabelecimento foi cadastrado. Aguarde a aprovação do administrador para acessar o painel.
+              Você receberá acesso em breve.
+            </p>
+            <button
+              type="button"
+              className="mt-4 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm"
+              onClick={() => router.push("/")}
+            >
+              Voltar ao início
+            </button>
+          </div>
+        </div>
+      </main>
+    );
   }
 
   return (
@@ -67,7 +86,7 @@ export default function StartPage() {
             <div>
               <h1 className="text-xl font-semibold">Criar conta</h1>
               <p className="mt-1 text-sm text-white/70">
-                Crie sua lanchonete e seu usuário admin.
+                Crie sua lanchonete. Após o cadastro, aguarde a aprovação do administrador.
               </p>
             </div>
             <button type="button" className="btn" onClick={() => router.push("/")}>
@@ -140,6 +159,14 @@ export default function StartPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function StartPage() {
+  return (
+    <Suspense fallback={<main className="min-h-screen p-6" />}>
+      <StartPageContent />
+    </Suspense>
   );
 }
 
