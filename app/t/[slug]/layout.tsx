@@ -33,8 +33,11 @@ export default async function TenantLayout({
                 Voltar ao painel
               </Link>
             ) : null}
-            <Link className="btn" href={`/t/${slug}/history`}>
-              Meus pedidos
+            <Link
+              className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs text-white/80 hover:bg-white/10 hover:text-white"
+              href={`/t/${slug}/history`}
+            >
+              Histórico
             </Link>
             <Link className="btn" href={`/t/${slug}/cart`}>
               Carrinho

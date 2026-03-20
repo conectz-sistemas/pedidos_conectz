@@ -1,6 +1,6 @@
 "use client";
 
-import { cartTotals, readCart } from "@/components/cart";
+import { cartTotals, clearCart, readCart } from "@/components/cart";
 import { addToHistory } from "@/components/CustomerHistory";
 import { formatBRLFromCents } from "@/lib/money";
 import { useMemo, useState } from "react";
@@ -83,11 +83,16 @@ export function CheckoutForm({
       return;
     }
 
-    addToHistory(merchantSlug, {
-      code: json.publicCode,
-      createdAt: new Date().toISOString(),
-      totalCents: totals.totalCents,
-    });
+    addToHistory(
+      merchantSlug,
+      {
+        code: json.publicCode,
+        createdAt: new Date().toISOString(),
+        totalCents: totals.totalCents,
+      },
+      json.merchantId
+    );
+    clearCart(merchantSlug);
     router.push(`/t/${merchantSlug}/order/${json.publicCode}`);
   }
 
