@@ -1,4 +1,5 @@
 import { CustomerHistory } from "@/components/CustomerHistory";
+import { prisma } from "@/lib/prisma";
 
 export default async function HistoryPage({
   params,
@@ -6,9 +7,13 @@ export default async function HistoryPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const merchant = await prisma.merchant.findUnique({
+    where: { slug },
+    select: { id: true },
+  });
   return (
     <main>
-      <CustomerHistory merchantSlug={slug} />
+      <CustomerHistory merchantSlug={slug} merchantId={merchant?.id ?? null} />
     </main>
   );
 }

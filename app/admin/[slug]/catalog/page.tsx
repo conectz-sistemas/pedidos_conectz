@@ -4,6 +4,8 @@ import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { CreateProductForm } from "@/components/CreateProductForm";
+import { IngredientDeleteButton } from "@/components/IngredientDeleteButton";
+import { IngredientGroupDeleteButton } from "@/components/IngredientGroupDeleteButton";
 import { LogoutButton } from "@/components/LogoutButton";
 import { ProductDeleteButton } from "@/components/ProductDeleteButton";
 
@@ -146,8 +148,9 @@ export default async function CatalogPage({
             </form>
             <div className="mt-4 grid gap-2 text-sm text-white/80">
               {groups.map((g) => (
-                <div key={g.id} className="rounded-xl border border-white/10 bg-black/20 p-3">
-                  {g.name}
+                <div key={g.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 p-3">
+                  <span>{g.name}</span>
+                  <IngredientGroupDeleteButton merchantSlug={slug} groupId={g.id} groupName={g.name} />
                 </div>
               ))}
               {groups.length === 0 ? <div className="text-white/60">Sem grupos.</div> : null}
@@ -190,14 +193,19 @@ export default async function CatalogPage({
 
             <div className="mt-4 grid gap-2 text-sm text-white/80">
               {ingredients.map((i) => (
-                <div key={i.id} className="rounded-xl border border-white/10 bg-black/20 p-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="text-white">{i.name}</div>
-                    <div className="text-xs text-white/60">
+                <div key={i.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 p-3">
+                  <div>
+                    <span className="text-white">{i.name}</span>
+                    <span className="ml-2 text-xs text-white/60">
                       {i.group?.name ? `${i.group.name} • ` : ""}
                       R$ {(i.priceCents / 100).toFixed(2)}
-                    </div>
+                    </span>
                   </div>
+                  <IngredientDeleteButton
+                    merchantSlug={slug}
+                    ingredientId={i.id}
+                    ingredientName={i.name}
+                  />
                 </div>
               ))}
               {ingredients.length === 0 ? <div className="text-white/60">Sem ingredientes.</div> : null}

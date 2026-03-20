@@ -228,6 +228,10 @@ export async function POST(
     select: { publicCode: true },
   });
 
-  return NextResponse.json({ ok: true, publicCode: created.publicCode });
+  return NextResponse.json({
+    ok: true,
+    publicCode: created.publicCode,
+    merchantId: merchant.id,
+  });
 }
 

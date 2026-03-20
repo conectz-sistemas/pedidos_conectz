@@ -4,22 +4,28 @@ import { formatBRLFromCents } from "@/lib/money";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-type HistoryEntry = {
+export type HistoryEntry = {
   code: string;
   createdAt: string;
   totalCents: number;
+  merchantId?: string;
 };
 
 function storageKey(merchantSlug: string) {
   return `pedidos_conectz_history_${merchantSlug}`;
 }
 
-export function addToHistory(merchantSlug: string, entry: HistoryEntry) {
+export function addToHistory(
+  merchantSlug: string,
+  entry: HistoryEntry,
+  merchantId?: string
+) {
   if (typeof window === "undefined") return;
   try {
+    const enriched = { ...entry, merchantId };
     const raw = window.localStorage.getItem(storageKey(merchantSlug));
     const list: HistoryEntry[] = raw ? JSON.parse(raw) ?? [] : [];
-    list.unshift(entry);
+    list.unshift(enriched);
     const unique = new Map<string, HistoryEntry>();
     for (const e of list) {
       if (!unique.has(e.code)) unique.set(e.code, e);
@@ -30,7 +36,13 @@ export function addToHistory(merchantSlug: string, entry: HistoryEntry) {
   }
 }
 
-export function CustomerHistory({ merchantSlug }: { merchantSlug: string }) {
+export function CustomerHistory({
+  merchantSlug,
+  merchantId,
+}: {
+  merchantSlug: string;
+  merchantId: string | null;
+}) {
   const [entries, setEntries] = useState<HistoryEntry[]>([]);
 
   useEffect(() => {
@@ -38,17 +50,19 @@ export function CustomerHistory({ merchantSlug }: { merchantSlug: string }) {
     try {
       const raw = window.localStorage.getItem(storageKey(merchantSlug));
       const list: HistoryEntry[] = raw ? JSON.parse(raw) ?? [] : [];
-      setEntries(list);
+      const filtered =
+        merchantId != null ? list.filter((e) => e.merchantId === merchantId) : [];
+      setEntries(filtered);
     } catch {
       setEntries([]);
     }
-  }, [merchantSlug]);
+  }, [merchantSlug, merchantId]);
 
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
       <h1 className="text-xl font-semibold">Histórico de pedidos</h1>
       <p className="mt-1 text-sm text-white/70">
-        Mostra os últimos pedidos feitos neste dispositivo para esta lanchonete.
+        Pedidos feitos neste dispositivo para este estabelecimento.
       </p>
 
       <div className="mt-4 grid gap-3">
