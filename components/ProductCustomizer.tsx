@@ -139,6 +139,11 @@ export function ProductCustomizer(props: {
       <div className="mt-6">
         <div className="text-sm font-medium text-white">Ingredientes</div>
         <div className="mt-2 grid gap-2">
+          {props.defaults.length === 0 ? (
+            <div className="rounded-xl border border-white/15 bg-white/5 p-4 text-sm text-white/60">
+              Este produto ainda não tem opções de personalização disponíveis.
+            </div>
+          ) : null}
           {props.defaults.map((d) => {
             const removedNow = !!removed[d.ingredientId];
             const chosen = substitute[d.ingredientId] ?? d.ingredientId;

@@ -9,10 +9,11 @@ MVP funcional do **Pedidos ConectZ** (multi-tenant por `slug`) para lanchonetes 
 ## Stack
 
 - **Next.js** (App Router) — frontend + API
-- **PostgreSQL** — recomendado Supabase (grátis para MVP)
+- **Neon** — PostgreSQL serverless (banco de dados)
+- **Supabase** — Storage para imagens de produtos
 - **Prisma**
 - **NextAuth (Credentials)** — email/senha
-- **Stripe** — assinatura (recorrência)
+- **Stripe** — assinatura (recorrência, opcional no MVP)
 
 ---
 
@@ -21,7 +22,7 @@ MVP funcional do **Pedidos ConectZ** (multi-tenant por `slug`) para lanchonetes 
 ### 1) Instalar dependências
 
 ```bash
-cd iuai
+cd pedidos_conectz
 npm install
 ```
 
@@ -33,11 +34,12 @@ Crie um arquivo `.env` a partir do `.env.example`:
 cp .env.example .env
 ```
 
-Preencha principalmente:
+Preencha:
 
-- `DATABASE_URL` (Postgres)
+- `DATABASE_URL` (Neon — connection string Pooled)
 - `NEXTAUTH_URL` (ex: `http://localhost:3000`)
 - `NEXTAUTH_SECRET` (qualquer string forte)
+- `NEXT_PUBLIC_SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` (para upload de imagens)
 
 ### 3) Migrar o banco e rodar seed
 
@@ -46,19 +48,15 @@ npx prisma migrate dev
 npx prisma db seed
 ```
 
-O seed cria a lanchonete **demo** e exemplos para a lógica de equivalentes:
+> **Nota:** Se `prisma migrate dev` falhar com timeout (Neon), use `npx prisma db push` para aplicar o schema.
 
-- Produto: **X-Bacon**
-- Ingrediente padrão: **Bacon**
-- Equivalentes sem custo: **Calabresa**, **Frango**
-- Extra pago: **Ovo (+R$2,00)**
+O seed cria apenas o **dono do SaaS** para o primeiro acesso:
 
-Também cria usuários:
+- **Dono**: `dono@pedidosconectz.com` / senha `admin123`
 
-- **Admin da lanchonete**: `admin@demo.com` / senha `admin123`
-- **Dono do SaaS**: `dono@pedidosconectz.com` / senha `admin123`
+Novas lanchonetes são criadas via `/start` ou `/start-dono` (primeiro dono em produção).
 
-### 4) Subir o projeto
+### 4) Subir o projeto (desenvolvimento)
 
 ```bash
 npm run dev
@@ -66,9 +64,37 @@ npm run dev
 
 Acesse:
 
-- Cliente (loja demo): `http://localhost:3000/t/demo`
+- Landing: `http://localhost:3000`
 - Login admin: `http://localhost:3000/admin/login`
 - Dono do SaaS: `http://localhost:3000/saas`
+
+---
+
+## Rodar em produção
+
+### Build
+
+```bash
+npm run build
+```
+
+### Iniciar servidor
+
+```bash
+npm run start
+```
+
+O servidor sobe na porta **3000** por padrão. Para alterar:
+
+```bash
+PORT=8080 npm run start
+```
+
+### Variáveis em produção
+
+No `.env` de produção, ajuste:
+
+- `NEXTAUTH_URL` → URL pública (ex: `https://pedidos-conectz.vercel.app`)
 
 ---
 
@@ -93,6 +119,19 @@ Acesse:
 - Visualiza pedidos e muda status em `/admin/{slug}/orders`
 - Abre/fecha manualmente a loja (botão no topo)
 - Cadastra cardápio e personalização em `/admin/{slug}/catalog`
+
+### Configurar personalização do produto
+
+Para o cliente poder customizar (remover, trocar equivalentes, adicionar extras):
+
+1. **Grupos** → crie grupos (ex: Proteínas, Saladas, Queijos)
+2. **Ingredientes** → cadastre ingredientes com preço extra e grupo
+3. **Produto** → crie o produto (nome, preço base, imagem)
+4. **Editar personalização** → para cada produto:
+   - Adicione **ingredientes padrão** (o que vem no lanche)
+   - Para cada ingrediente: marque se pode **remover** e se é **travado** (padrão do lanche)
+   - Marque os **equivalentes** (ingredientes que o cliente pode trocar sem custo)
+   - Adicione **extras pagos** (ex: Ovo +R$2,00)
 
 ---
 
@@ -124,12 +163,15 @@ stripe listen --forward-to localhost:3000/api/stripe/webhook
 
 ---
 
-## Deploy (sugestão gratuita)
+## Deploy
+
+Veja [DEPLOY.md](./DEPLOY.md) para instruções completas.
 
 - **Vercel**: deploy do Next.js
-- **Supabase**: Postgres (e opcionalmente Storage/Realtime para evoluções)
+- **Neon**: PostgreSQL
+- **Supabase**: Storage para imagens de produtos
 
-No Vercel, configure as env vars do `.env` e rode migrations (via GitHub Actions, CLI ou manualmente pelo Prisma).
+Configure as variáveis no Vercel (incluindo Supabase para upload de imagens) e rode migrations.
 
 ---
 

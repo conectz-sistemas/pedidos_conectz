@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+  // Strict Mode causa double-render em dev → piscadas e sensação de "reverter"
+  reactStrictMode: false,
 };
 
 module.exports = nextConfig;

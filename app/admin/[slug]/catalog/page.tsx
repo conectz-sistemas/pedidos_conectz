@@ -4,6 +4,7 @@ import { getServerSession } from "next-auth/next";
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
 import { CreateProductForm } from "@/components/CreateProductForm";
+import { ProductDeleteButton } from "@/components/ProductDeleteButton";
 
 export const dynamic = "force-dynamic";
 
@@ -85,7 +86,13 @@ export default async function CatalogPage({
     prisma.product.findMany({
       where: { merchantId: merchant.id },
       orderBy: { createdAt: "desc" },
-      select: { id: true, name: true, isActive: true, basePriceCents: true },
+      select: {
+        id: true,
+        name: true,
+        isActive: true,
+        basePriceCents: true,
+        _count: { select: { defaultIngredients: true } },
+      },
     }),
   ]);
 
@@ -195,15 +202,21 @@ export default async function CatalogPage({
               <div key={p.id} className="rounded-xl border border-white/10 bg-black/20 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-white font-medium">{p.name}</div>
-                  <Link
-                    className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs"
-                    href={`/admin/${slug}/catalog/product/${p.id}`}
-                  >
-                    Editar personalização
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs"
+                      href={`/admin/${slug}/catalog/product/${p.id}`}
+                    >
+                      Editar personalização
+                    </Link>
+                    <ProductDeleteButton merchantSlug={slug} productId={p.id} productName={p.name} />
+                  </div>
                 </div>
                 <div className="mt-1 text-xs text-white/60">
                   Ativo: {p.isActive ? "sim" : "não"} • Base: R$ {(p.basePriceCents / 100).toFixed(2)}
+                  {p._count.defaultIngredients === 0 ? (
+                    <span className="ml-2 text-yellow-400">• Configure ingredientes e equivalentes</span>
+                  ) : null}
                 </div>
               </div>
             ))}
