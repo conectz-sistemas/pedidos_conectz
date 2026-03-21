@@ -188,17 +188,44 @@ export function AdminOrdersBoard({ merchantSlug }: { merchantSlug: string }) {
                   </div>
                   {it.modifications.length ? (
                     <ul className="mt-2 list-disc pl-5 text-xs text-white/70">
-                      {it.modifications.map((m) => (
-                        <li key={m.id}>
-                          {m.type === "REMOVE"
-                            ? `Sem ${m.baseIngredientName}`
-                            : m.type === "SUBSTITUTE"
-                              ? `${m.baseIngredientName} → ${m.chosenIngredientName} (sem custo)`
-                              : `Extra: ${m.chosenIngredientName} (+${formatBRLFromCents(
-                                  m.priceDeltaCents
-                                )})`}
-                        </li>
-                      ))}
+                      {(() => {
+                        const removes = it.modifications.filter((m) => m.type === "REMOVE");
+                        const subs = it.modifications.filter((m) => m.type === "SUBSTITUTE");
+                        const extras = it.modifications.filter((m) => m.type === "EXTRA");
+                        const extrasByKey = new Map<string, { name: string; qty: number; cents: number }>();
+                        for (const m of extras) {
+                          const key = `${m.chosenIngredientName}-${m.priceDeltaCents}`;
+                          const cur = extrasByKey.get(key);
+                          if (cur) {
+                            cur.qty++;
+                            cur.cents += m.priceDeltaCents;
+                          } else {
+                            extrasByKey.set(key, {
+                              name: m.chosenIngredientName ?? "",
+                              qty: 1,
+                              cents: m.priceDeltaCents,
+                            });
+                          }
+                        }
+                        return (
+                          <>
+                            {removes.map((m) => (
+                              <li key={m.id}>Sem {m.baseIngredientName}</li>
+                            ))}
+                            {subs.map((m) => (
+                              <li key={m.id}>
+                                {m.baseIngredientName} → {m.chosenIngredientName} (sem custo)
+                              </li>
+                            ))}
+                            {Array.from(extrasByKey.values()).map((e, i) => (
+                              <li key={`extra-${i}-${e.name}`}>
+                                Extra: {e.qty > 1 ? `${e.qty}× ` : ""}
+                                {e.name} (+{formatBRLFromCents(e.cents)})
+                              </li>
+                            ))}
+                          </>
+                        );
+                      })()}
                     </ul>
                   ) : null}
                   {it.notes ? (

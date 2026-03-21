@@ -30,7 +30,14 @@ const orderSchema = z.object({
           )
           .default([]),
         extras: z
-          .array(z.object({ ingredientId: z.string(), name: z.string(), priceCents: z.number().int() }))
+          .array(
+            z.object({
+              ingredientId: z.string(),
+              name: z.string(),
+              priceCents: z.number().int(),
+              quantity: z.number().int().min(1).max(20).optional(),
+            })
+          )
           .default([]),
       })
     )
@@ -132,11 +139,12 @@ export async function POST(
       .map((e) => {
         const allowed = allowedExtras.get(e.ingredientId);
         if (!allowed) return null;
-        return { ingredientId: e.ingredientId, name: allowed.name, priceCents: allowed.priceCents };
+        const qty = Math.max(1, Math.min(20, e.quantity ?? 1));
+        return { ingredientId: e.ingredientId, name: allowed.name, priceCents: allowed.priceCents, quantity: qty };
       })
-      .filter(Boolean) as { ingredientId: string; name: string; priceCents: number }[];
+      .filter(Boolean) as { ingredientId: string; name: string; priceCents: number; quantity: number }[];
 
-    const extrasSum = extrasClean.reduce((s, e) => s + e.priceCents, 0);
+    const extrasSum = extrasClean.reduce((s, e) => s + e.priceCents * e.quantity, 0);
     subtotalCents += (p.basePriceCents + extrasSum) * it.quantity;
 
     const mods: any[] = [];
@@ -177,11 +185,13 @@ export async function POST(
     }
 
     for (const e of extrasClean) {
-      mods.push({
-        type: "EXTRA",
-        chosenIngredientName: e.name,
-        priceDeltaCents: e.priceCents,
-      });
+      for (let i = 0; i < e.quantity; i++) {
+        mods.push({
+          type: "EXTRA",
+          chosenIngredientName: e.name,
+          priceDeltaCents: e.priceCents,
+        });
+      }
     }
 
     orderItemsCreate.push({
