@@ -205,7 +205,7 @@ export function ProductCustomizer(props: {
                     ) : null}
                   </div>
 
-                  {!d.isLocked && d.isRemovable ? (
+                  {!d.isLocked && d.isRemovable && props.defaults.length > 1 ? (
                     <button
                       type="button"
                       onClick={() => toggleRemove(d.ingredientId)}
