@@ -20,6 +20,20 @@ export function CartView({ merchantSlug }: { merchantSlug: string }) {
     writeCart(merchantSlug, next);
   }
 
+  function updateQuantity(idx: number, delta: number) {
+    const it = cart.items[idx];
+    if (!it) return;
+    const qty = Math.max(1, Math.min(20, it.quantity + delta));
+    const next = {
+      ...cart,
+      items: cart.items.map((item, i) =>
+        i === idx ? { ...item, quantity: qty } : item
+      ),
+    };
+    setCart(next);
+    writeCart(merchantSlug, next);
+  }
+
   function wipe() {
     clearCart(merchantSlug);
     setCart({ items: [] });
@@ -53,10 +67,11 @@ export function CartView({ merchantSlug }: { merchantSlug: string }) {
 
       <div className="mt-6 grid gap-3">
         {cart.items.map((it, idx) => {
-          const itemTotal =
-            (it.basePriceCents +
-              it.extras.reduce((s, e) => s + e.priceCents, 0)) *
-            it.quantity;
+          const extrasSum = it.extras.reduce(
+            (s, e) => s + e.priceCents * (e.quantity ?? 1),
+            0
+          );
+          const itemTotal = (it.basePriceCents + extrasSum) * it.quantity;
           return (
             <div
               key={idx}
@@ -69,13 +84,36 @@ export function CartView({ merchantSlug }: { merchantSlug: string }) {
                     {formatBRLFromCents(itemTotal)}
                   </div>
                 </div>
-                <button
-                  className="rounded-xl border border-white/15 bg-white/5 px-3 py-1.5 text-xs"
-                  onClick={() => removeIndex(idx)}
-                  type="button"
-                >
-                  Remover
-                </button>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center rounded-xl border border-white/15 bg-black/20">
+                    <button
+                      type="button"
+                      onClick={() => updateQuantity(idx, -1)}
+                      className="rounded-l-xl px-2 py-1.5 text-sm text-white hover:bg-white/10 disabled:opacity-50"
+                      disabled={it.quantity <= 1}
+                    >
+                      −
+                    </button>
+                    <span className="min-w-[1.5rem] px-1 text-center text-sm tabular-nums">
+                      {it.quantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => updateQuantity(idx, 1)}
+                      className="rounded-r-xl px-2 py-1.5 text-sm text-white hover:bg-white/10 disabled:opacity-50"
+                      disabled={it.quantity >= 20}
+                    >
+                      +
+                    </button>
+                  </div>
+                  <button
+                    className="rounded-xl border border-red-500/30 px-3 py-1.5 text-xs text-red-300 hover:bg-red-500/10"
+                    onClick={() => removeIndex(idx)}
+                    type="button"
+                  >
+                    Remover
+                  </button>
+                </div>
               </div>
 
               {it.substitutions.length ? (
@@ -106,11 +144,16 @@ export function CartView({ merchantSlug }: { merchantSlug: string }) {
                 <div className="mt-3 text-sm text-white/80">
                   <div className="text-xs text-white/60">Adicionais (pagos)</div>
                   <ul className="mt-1 list-disc pl-5">
-                    {it.extras.map((e) => (
-                      <li key={e.ingredientId}>
-                        {e.name} (+{formatBRLFromCents(e.priceCents)})
-                      </li>
-                    ))}
+                    {it.extras.map((e) => {
+                      const qty = e.quantity ?? 1;
+                      const extraTotal = e.priceCents * qty;
+                      return (
+                        <li key={e.ingredientId}>
+                          {qty > 1 ? `${qty}× ` : ""}
+                          {e.name} (+{formatBRLFromCents(extraTotal)})
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               ) : null}

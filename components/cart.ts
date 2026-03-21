@@ -1,4 +1,4 @@
-export type CartExtra = { ingredientId: string; name: string; priceCents: number };
+export type CartExtra = { ingredientId: string; name: string; priceCents: number; quantity?: number };
 
 export type CartSubstitution = {
   baseIngredientId: string;
@@ -56,7 +56,10 @@ export function clearCart(merchantSlug: string) {
 
 export function cartTotals(cart: Cart) {
   const subtotalCents = cart.items.reduce((sum, it) => {
-    const extrasSum = it.extras.reduce((s, e) => s + e.priceCents, 0);
+    const extrasSum = it.extras.reduce(
+      (s, e) => s + e.priceCents * (e.quantity ?? 1),
+      0
+    );
     return sum + (it.basePriceCents + extrasSum) * it.quantity;
   }, 0);
   return { subtotalCents, totalCents: subtotalCents };

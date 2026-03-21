@@ -30,10 +30,11 @@ export function ProductCustomizer(props: {
   extras: Extra[];
 }) {
   const router = useRouter();
+  const [quantity, setQuantity] = useState(1);
   const [notes, setNotes] = useState("");
   const [removed, setRemoved] = useState<Record<string, boolean>>({});
   const [substitute, setSubstitute] = useState<Record<string, string>>({}); // baseIngredientId -> chosenIngredientId
-  const [extras, setExtras] = useState<Record<string, boolean>>({});
+  const [extras, setExtras] = useState<Record<string, number>>({}); // ingredientId -> quantity (0 = não selecionado)
 
   const extrasById = useMemo(() => {
     const m = new Map<string, Extra>();
@@ -43,10 +44,10 @@ export function ProductCustomizer(props: {
 
   const selectedExtras: CartExtra[] = useMemo(() => {
     return Object.entries(extras)
-      .filter(([, v]) => v)
-      .map(([ingredientId]) => {
+      .filter(([, qty]) => qty > 0)
+      .map(([ingredientId, qty]) => {
         const e = extrasById.get(ingredientId)!;
-        return { ingredientId, name: e.name, priceCents: e.priceCents };
+        return { ingredientId, name: e.name, priceCents: e.priceCents, quantity: qty };
       });
   }, [extras, extrasById]);
 
@@ -75,9 +76,12 @@ export function ProductCustomizer(props: {
   }, [props.defaults, removed]);
 
   const totalCents = useMemo(() => {
-    const extrasSum = selectedExtras.reduce((s, e) => s + e.priceCents, 0);
-    return props.product.basePriceCents + extrasSum;
-  }, [props.product.basePriceCents, selectedExtras]);
+    const extrasSum = selectedExtras.reduce(
+      (s, e) => s + e.priceCents * (e.quantity ?? 1),
+      0
+    );
+    return (props.product.basePriceCents + extrasSum) * quantity;
+  }, [props.product.basePriceCents, selectedExtras, quantity]);
 
   function toggleRemove(ingredientId: string) {
     setRemoved((r) => ({ ...r, [ingredientId]: !r[ingredientId] }));
@@ -94,8 +98,8 @@ export function ProductCustomizer(props: {
     setSubstitute((s) => ({ ...s, [baseIngredientId]: chosenIngredientId }));
   }
 
-  function toggleExtra(ingredientId: string) {
-    setExtras((e) => ({ ...e, [ingredientId]: !e[ingredientId] }));
+  function setExtraQty(ingredientId: string, qty: number) {
+    setExtras((e) => ({ ...e, [ingredientId]: Math.max(0, Math.min(qty, 20)) }));
   }
 
   function addToCart() {
@@ -103,7 +107,7 @@ export function ProductCustomizer(props: {
       productId: props.product.id,
       productName: props.product.name,
       basePriceCents: props.product.basePriceCents,
-      quantity: 1,
+      quantity,
       notes: notes.trim() ? notes.trim() : undefined,
       removed: removedList,
       substitutions,
@@ -117,6 +121,28 @@ export function ProductCustomizer(props: {
       <div className="flex gap-4">
         <div className="flex-1">
           <h1 className="text-xl font-semibold">{props.product.name}</h1>
+          <div className="mt-3 flex items-center gap-3">
+            <span className="text-sm text-white/80">Quantidade</span>
+            <div className="flex items-center gap-2 rounded-xl border border-white/15 bg-black/20">
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                className="rounded-l-xl px-3 py-2 text-lg font-medium text-white hover:bg-white/10 disabled:opacity-50"
+                disabled={quantity <= 1}
+              >
+                −
+              </button>
+              <span className="min-w-[2rem] text-center font-medium tabular-nums">{quantity}</span>
+              <button
+                type="button"
+                onClick={() => setQuantity((q) => Math.min(20, q + 1))}
+                className="rounded-r-xl px-3 py-2 text-lg font-medium text-white hover:bg-white/10 disabled:opacity-50"
+                disabled={quantity >= 20}
+              >
+                +
+              </button>
+            </div>
+          </div>
           {props.product.description ? (
             <p className="mt-1 text-sm text-white/70">{props.product.description}</p>
           ) : null}
@@ -233,22 +259,41 @@ export function ProductCustomizer(props: {
       <div className="mt-6">
         <div className="text-sm font-medium text-white">Adicionais (pagos)</div>
         <div className="mt-2 grid gap-2">
-          {props.extras.map((e) => (
-            <label
-              key={e.ingredientId}
-              className="flex items-center justify-between gap-3 rounded-xl border border-white/15 bg-white/5 p-3 text-sm"
-            >
-              <span className="text-white">
-                {e.name}{" "}
-                <span className="text-white/60">({formatBRLFromCents(e.priceCents)})</span>
-              </span>
-              <input
-                type="checkbox"
-                checked={!!extras[e.ingredientId]}
-                onChange={() => toggleExtra(e.ingredientId)}
-              />
-            </label>
-          ))}
+          {props.extras.map((e) => {
+            const qty = extras[e.ingredientId] ?? 0;
+            return (
+              <div
+                key={e.ingredientId}
+                className="flex items-center justify-between gap-3 rounded-xl border border-white/15 bg-white/5 p-3 text-sm"
+              >
+                <span className="text-white">
+                  {e.name}{" "}
+                  <span className="text-white/60">({formatBRLFromCents(e.priceCents)} cada)</span>
+                </span>
+                <div className="flex items-center gap-2 rounded-xl border border-white/15 bg-black/20">
+                  <button
+                    type="button"
+                    onClick={() => setExtraQty(e.ingredientId, qty - 1)}
+                    className="rounded-l-xl px-3 py-1.5 text-sm font-medium text-white hover:bg-white/10 disabled:opacity-50"
+                    disabled={qty <= 0}
+                  >
+                    −
+                  </button>
+                  <span className="min-w-[1.5rem] text-center tabular-nums text-white">
+                    {qty}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setExtraQty(e.ingredientId, qty + 1)}
+                    className="rounded-r-xl px-3 py-1.5 text-sm font-medium text-white hover:bg-white/10 disabled:opacity-50"
+                    disabled={qty >= 20}
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            );
+          })}
           {props.extras.length === 0 ? (
             <div className="text-sm text-white/60">Sem adicionais.</div>
           ) : null}
